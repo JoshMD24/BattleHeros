@@ -16,6 +16,8 @@
 
 #include "PlayerCharacter.h"
 
+#include "Math/Quat.h"
+
 #include "Enemy.generated.h"
 
 UCLASS()
@@ -82,6 +84,18 @@ public:
 
 	FTimerHandle DeathDelay;
 	FTimerHandle ShootDelay;
+
+
+	//AI class
+	FVector orientation;
+	FVector velocity;
+	float rotation;
+	float maxSpeed;
+	float acceptanceRadius;
+
+	FVector shootOrientation;
+
+	int missChance;
 
 protected:
 	// Called when the game starts or when spawned
