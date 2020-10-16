@@ -33,7 +33,7 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWaypoint::StaticClass(), Waypoints);
-	MoveToWaypoints();
+	/*MoveToWaypoints();*/
 
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(), this);
 }
@@ -42,6 +42,19 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (player)
+	{
+		velocity = player->GetActorLocation() - AEnemy::GetActorLocation();
+		velocity.Normalize();
+		velocity *= GetCharacterMovement()->MaxWalkSpeed;
+
+		orientation = player->GetActorLocation();
+
+		AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(GetController());
+		EnemyAIController->MoveToLocation(velocity);
+		AEnemy::SetActorRotation(orientation.Rotation());
+	}
 }
 
 // Called to bind functionality to input
@@ -75,6 +88,8 @@ void AEnemy::OnDeath()
 
 void AEnemy::DropLoot()
 {
+	Player->money += 5;
+
 	lootDropNumber = FMath::RandRange(1, 2);
 
 	UWorld* World = GetWorld();
@@ -138,11 +153,28 @@ void AEnemy::ShootBullet()
 
 			UWorld* World = GetWorld();
 
-			//FVector spawnLocation = GetActorLocation() + FVector(50.0f, 0.0f, 0.0f);
+			/*FVector spawnLocation = GetActorLocation() + FVector(50.0f, 0.0f, 0.0f);*/
 			FVector spawnLocation = BulletSpawnLocation->GetComponentLocation();
 			FRotator spawnRotation = BulletSpawnLocation->GetComponentRotation();
+			//World->SpawnActor(Bullet, &spawnLocation, &spawnRotation);
+		
+			//AI class
+			shootOrientation = player->GetActorLocation();
+			AEnemy::SetActorRotation(shootOrientation.Rotation());
+
+			missChance = FMath::RandRange(1, 10);
+
+			if (missChance <= 2)
+			{
+				spawnLocation = BulletSpawnLocation->GetComponentLocation() + FVector(300.0f, 0.0f, 0.0f);
+			}
+			else if (missChance > 2 && missChance <= 4)
+			{
+				spawnLocation = BulletSpawnLocation->GetComponentLocation() + FVector(-300.0f, 0.0f, 0.0f);
+			}
 
 			World->SpawnActor(Bullet, &spawnLocation, &spawnRotation);
+
 	}
 }
 
