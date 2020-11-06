@@ -191,3 +191,56 @@ void AEnemy::LookAtPlayer()
 			SetActorRotation(EnemyRot);
 		}
 }
+
+//// A* Pathfinding
+//std::unordered_map<Hex, Hex> AMapManager::FindPath(Hex start, Hex goal)
+//{
+//	// The optimal path.
+//	std::unordered_map<Hex, Hex> cameFrom = { {start, start} };
+//	// The cost to reach each hex
+//	std::unordered_map<Hex, int> costSoFar = { {start, 0} };
+//
+//	// A sorted queue of hexes (cheapest in front) of all available tiles you can move to.
+//	PriorityQueue<Hex> availableMoves;
+//	availableMoves.put(start, 0); // Add the starting tile with 0 cost.
+//
+//	// While we still have nodes to search
+//	while (!availableMoves.empty())
+//	{
+//		// Get the next cheapest tile.
+//		auto current = availableMoves.get();
+//
+//		// If it is the goal, we are done.
+//		if (current == goal)
+//			break;
+//
+//		// Cycle through the current hex's neighbors
+//		for (int i = 0; i < 6; ++i)
+//		{
+//			// Get the neighbor
+//			auto neighbor = current.neighbor(current, i);
+//
+//			// Calculate its cost
+//			int neighborCost = costSoFar[current] + GetHexCost(FVector(neighbor.q, neighbor.r, neighbor.s));
+//
+//			// If the neighbor is not already available, OR
+//			// If the neighbor is available but we found a cheaper path to it
+//			if (!costSoFar.count(neighbor) || neighborCost < costSoFar[neighbor])
+//			{
+//				// Set the cost for the neighbor to the calculated cost
+//				costSoFar[neighbor] = neighborCost;
+//
+//				// Its priority is its cost + its distance to the goal
+//				int priority = neighborCost + neighbor.distance(neighbor, goal);
+//
+//				// Add the neighbor to the available moves
+//				availableMoves.put(neighbor, priority);
+//
+//				// Add the current hex to the optimal path
+//				cameFrom[neighbor] = current;
+//			}
+//		}
+//	}
+//
+//	return cameFrom;
+//}
